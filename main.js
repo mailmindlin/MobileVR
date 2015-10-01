@@ -1,3 +1,5 @@
+var version = "0.0.0.5";
+console.info(version);
 var canvas = $('canvas')[0];
 var ctx = canvas.getContext('2d');
 Object.defineEnum(window,'Directions',[
@@ -34,10 +36,10 @@ var pData = {
 };
 window.addEventListener('deviceorientation', function(e) {
 	pData.abs = event.absolute | 0;
+	pData.alpha = event.alpha | 0;
+	pData.beta = event.beta - 90 | 0;
+	pData.gamma = event.gamma | 0;
 	switch (pData.orientation) {
-		pData.alpha = event.alpha | 0;
-		pData.beta = event.beta - 90 | 0;
-		pData.gamma = event.gamma | 0;
 		case Directions.top:
 			pData.pitch = event.alpha | 0;
 			pData.yaw = event.beta - 90 | 0;
