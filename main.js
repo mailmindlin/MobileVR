@@ -41,10 +41,10 @@ window.addEventListener('devicemotion', function(e) {
 	pData.db = d.beta;
 	pData.dg = d.gamma;
 }, true);
-function renderInfo(ctx) {
+function renderInfo(ctx, width, height) {
 	ctx.font="20px Georgia";
 	var text = JSON.stringify(pData);
-	var lines = ["Alpha",pData.alpha,"Beta",pData.beta,"Gamma",pData.gamma];
+	var lines = ["α: " + pData.alpha,"β: " + pData.beta,"γ: " + pData.gamma];
 	var overshoot;
 	while((overshoot = ctx.measureText(lines[lines.length-1]).width/(canvas.width-10))>1) {
 		var tmp = lines[lines.length-1];
@@ -56,6 +56,27 @@ function renderInfo(ctx) {
 	console.log(text);
 	for (var i=0;i<lines.length;i++)
 		ctx.fillText(lines[i], 0, 20 + 20 * i);
+	
+	ctx.strokeStyle='black';
+	ctx.beginPath();
+	ctx.moveTo(width/2, 100);
+	ctx.lineTo(width/2, 125);
+	ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.moveTo(-pData.alpha * width/360, 105);
+	ctx.lineTo(width/2, 105);
+	ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.moveTo(-pData.beta * width/360, 115);
+	ctx.lineTo(width/2, 115);
+	ctx.stroke();
+	
+	ctx.beginPath();
+	ctx.moveTo(-pData.beta * width/360, 120);
+	ctx.lineTo(width/2, 120);
+	ctx.stroke();
 }
 function renderDot(ctx) {
 	var g = 0;
@@ -87,8 +108,8 @@ var Renderer = {
 		canvas.width = $(window).width();
 		ctx.clearRect(0,0,canvas.width, canvas.height);
 		
-		renderInfo(ctx);
-		renderDot(ctx);
+		renderInfo(ctx, canvas.width, canvas.height);
+		renderDot(ctx, canvas.width, canvas.height);
 		
 		if (Renderer.render)
 			window.requestAnimationFrame(Renderer.renderFrame);
