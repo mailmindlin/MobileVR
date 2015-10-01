@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<meta charset="UTF-8"/>
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, minimal-ui"/>
 		
 		<link rel="apple-touch-icon" sizes="57x57" href="icons/apple-touch-icon-57x57.png"/>
@@ -30,9 +31,13 @@
 		<link rel="stylesheet" href="main.css"/>
 		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 		<script>
+			window.onerror = function(msg, url, linenumber) {
+				alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
+				return true;
+			};
 			var a='%3Cscript%20src%3D%22https%3A//rawgit.com/mailmindlin/MobileVR/gh-pages/symbol.js%22%3E%3C/script%3E%3Cscript%20src%3D%22https%3A//rawgit.com/mailmindlin/MobileVR/gh-pages/oop.js%22%3E%3C/script%3E%3Cscript%20src%3D%22https%3A//rawgit.com/mailmindlin/MobileVR/gh-pages/webvrpoly.js%22%3E%3C/script%3E%3Cscript%20src%3D%22https%3A//rawgit.com/mailmindlin/MobileVR/gh-pages/main.js%22%20async%20defer%3E%3C/script%3E';
 			var b='%3Cscript%20src%3D%22symbol.js%22%3E%3C/script%3E%3Cscript%20src%3D%22oop.js%22%3E%3C/script%%3Cscript%20src%3D%22webvrpoly.js%22%3E%3C/script%3E%3Cscript%20src%3D%22main.js%22%20async%20defer%3E%3C/script%3E';
-			document.write(unescape(location.protocol==='file:'?a:b));
+			document.write(unescape(location.protocol=='file:'?b:a));
 		</script>
 	</head>
 	<body>
