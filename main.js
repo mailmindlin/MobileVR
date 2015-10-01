@@ -61,7 +61,7 @@ function renderInfo(ctx) {
 }
 function renderDot(ctx) {
 	var g = 0;
-	var b = 0;
+	var b = 90;
 	var ra = (pData.gamma<180?pData.gamma:360-pData.gamma) - g;
 	var rb = b - pData.beta;
 	
