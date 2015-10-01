@@ -44,9 +44,7 @@ window.addEventListener('devicemotion', function(e) {
 function renderInfo(ctx) {
 	ctx.font="20px Georgia";
 	var text = JSON.stringify(pData);
-	var lines = [];
-	for (var i in pData)
-		lines.push(i+": "+pData[i]);
+	var lines = ["Alpha",pData.alpha,"Beta",pData.beta,"Gamma",pData.gamma];
 	var overshoot;
 	while((overshoot = ctx.measureText(lines[lines.length-1]).width/(canvas.width-10))>1) {
 		var tmp = lines[lines.length-1];
@@ -89,7 +87,8 @@ var Renderer = {
 		canvas.width = $(window).width();
 		ctx.clearRect(0,0,canvas.width, canvas.height);
 		
-		Renderer.render(ctx);
+		renderInfo(ctx);
+		renderDot(ctx);
 		
 		if (Renderer.render)
 			window.requestAnimationFrame(Renderer.renderFrame);
