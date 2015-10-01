@@ -27,40 +27,46 @@ var pData = {
 	gz:0,
 	da:0,
 	db:0,
-	dg:0
+	dg:0,
+	pitch: 0,
+	yaw: 0,
+	roll: 0
 };
 window.addEventListener('deviceorientation', function(e) {
 	pData.abs = event.absolute | 0;
 	switch (pData.orientation) {
+		pData.alpha = event.alpha | 0;
+		pData.beta = event.beta - 90 | 0;
+		pData.gamma = event.gamma | 0;
 		case Directions.top:
-			pData.alpha = event.alpha | 0;
-			pData.beta = event.beta - 90 | 0;
-			pData.gamma = event.gamma | 0;
+			pData.pitch = event.alpha | 0;
+			pData.yaw = event.beta - 90 | 0;
+			pData.roll = event.gamma | 0;
 			break;
 		case Directions.bottom:
-			pData.alpha = event.alpha | 0;
-			pData.beta = event.beta + 90 | 0;
-			pData.gamma = event.gamma | 0;
+			pData.pitch = event.alpha | 0;
+			pData.yaw = event.beta + 90 | 0;
+			pData.roll = event.gamma | 0;
 			break;
 		case Directions.up:
-			pData.alpha = event.alpha | 0;
-			pData.beta = event.beta | 0;
-			pData.gamma = event.gamma | 0;
+			pData.pitch = event.beta | 0;
+			pData.yaw = event.alpha | 0;
+			pData.roll = event.gamma | 0;
 			break;
 		case Directions.down:
-			pData.alpha = event.alpha | 0;
-			pData.beta = event.beta - 180 | 0;
-			pData.gamma = event.gamma | 0;
+			pData.pitch = event.beta + 180 | 0;
+			pData.yaw = event.alpha + 180 | 0;
+			pData.roll = event.gamma | 0;
 			break;
 		case Directions.left:
-			pData.alpha = event.alpha + 90 | 0;
-			pData.beta = event.beta | 0;
-			pData.gamma = event.gamma | 0;
+			pData.pitch = event.gamma | 0;
+			pData.yaw = event.beta | 0;
+			pData.roll = event.alpha + 90 | 0;
 			break;
 		case Directions.right:
-			pData.alpha = event.alpha - 90 | 0;
-			pData.beta = event.beta | 0;
-			pData.gamma = event.gamma | 0;
+			pData.pitch = event.gamma | 0;
+			pData.yaw = event.beta | 0;
+			pData.roll = event.alpha - 90 | 0;
 			break;
 	}
 }, true);
@@ -81,7 +87,8 @@ window.addEventListener('devicemotion', function(e) {
 function renderInfo(ctx, width, height) {
 	ctx.font="20px Georgia";
 	var text = JSON.stringify(pData);
-	var lines = ["α: " + pData.alpha,"β: " + pData.beta,"γ: " + pData.gamma];
+	var lines = ["α: " + pData.alpha,"β: " + pData.beta,"γ: " + pData.gamma,
+		"p: "+pData.pitch, "y: "+pData.yaw, "r: "+pData.roll];
 	var overshoot;
 	while((overshoot = ctx.measureText(lines[lines.length-1]).width/(canvas.width-10))>1) {
 		var tmp = lines[lines.length-1];
@@ -101,17 +108,17 @@ function renderInfo(ctx, width, height) {
 	ctx.stroke();
 	
 	ctx.beginPath();
-	ctx.moveTo((pData.alpha/180 + 1) * width/2, 105);
+	ctx.moveTo((pData.pitch/180 + 1) * width/2, 105);
 	ctx.lineTo(width/2, 105);
 	ctx.stroke();
 	
 	ctx.beginPath();
-	ctx.moveTo((pData.beta/180 + 1) * width/2, 115);
+	ctx.moveTo((pData.yaw/180 + 1) * width/2, 115);
 	ctx.lineTo(width/2, 115);
 	ctx.stroke();
 	
 	ctx.beginPath();
-	ctx.moveTo((pData.gamma/180 + 1) * width/2, 120);
+	ctx.moveTo((pData.roll/180 + 1) * width/2, 120);
 	ctx.lineTo(width/2, 120);
 	ctx.stroke();
 }
