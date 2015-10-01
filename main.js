@@ -64,17 +64,17 @@ function renderInfo(ctx, width, height) {
 	ctx.stroke();
 	
 	ctx.beginPath();
-	ctx.moveTo(-pData.alpha * width/360, 105);
+	ctx.moveTo((-pData.alpha/180 + 1) * width/2, 105);
 	ctx.lineTo(width/2, 105);
 	ctx.stroke();
 	
 	ctx.beginPath();
-	ctx.moveTo(-pData.beta * width/360, 115);
+	ctx.moveTo((-pData.beta/180 + 1) * width/2, 115);
 	ctx.lineTo(width/2, 115);
 	ctx.stroke();
 	
 	ctx.beginPath();
-	ctx.moveTo(-pData.beta * width/360, 120);
+	ctx.moveTo((-pData.gamma/180 + 1) * width/2, 120);
 	ctx.lineTo(width/2, 120);
 	ctx.stroke();
 }
