@@ -2,10 +2,12 @@
 	Object.defineEnum = function(scope, name, arr) {
 		var symbols = [];
 		for (var i in arr) {
+			var sym;
 			if (arr[i].toString().indexOf('Symbol')==0)//the best check of arr[i] instanceof Symbol that I could come up with
-				symbols[i] = arr[i];
+				sym = arr[i];
 			else
-				symbols[i] = Symbol(arr[i]);
+				sym = Symbol(arr[i]);
+			symbols[i] = symbols[arr[i]] = symbols[sym] = sym;
 		}
 		Object.defineProperty(scope, name, {configurable: false, enumerable: true, get: function(){return symbols;}});
 	};
