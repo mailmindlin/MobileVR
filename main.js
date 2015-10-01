@@ -41,14 +41,47 @@ window.addEventListener('devicemotion', function(e) {
 	pData.db = d.beta;
 	pData.dg = d.gamma;
 }, true);
+function renderInfo(ctx) {
+	ctx.font="20px Georgia";
+	var text = JSON.stringify(pData);
+	var lines = [];
+	for (var i in pData)
+		lines.push(i+": "+pData[i]);
+	var overshoot;
+	while((overshoot = ctx.measureText(lines[lines.length-1]).width/(canvas.width-10))>1) {
+		var tmp = lines[lines.length-1];
+		var i = tmp.length/overshoot -1 | 0;
+		lines[lines.length-1] = tmp.substr(0,i);
+		lines[lines.length] = tmp.substr(i);
+	}
+	text = lines.join("\n");
+	console.log(text);
+	for (var i=0;i<lines.length;i++)
+		ctx.fillText(lines[i], 0, 20 + 20 * i);
+}
+function renderDot(ctx) {
+	var g = 0;
+	var b = 0;
+	var ra = (pData.gamma<180?pData.gamma:360-pData.gamma) - g;
+	var rb = b - pData.beta;
+	
+	var x = canvas.width/2 + 2 * ra;
+	var y = canvas.height/2 - 2 * rb;
+	
+	ctx.fillStyle = '#000';
+	ctx.beginPath();
+	ctx.arc(x, y, 10, 0, 6.29);
+	ctx.fill();
+	console.log(ra,rb, pData.beta);
+}
 var Renderer = {
 	_doRender: true,
-	set render(value) {
+	set doRender(value) {
 		this._doRender = value;
 		if (value)
 			this.renderFrame(0);
 	},
-	get render() {
+	get doRender() {
 		return this._doRender;
 	},
 	renderFrame: function(timestamp) {
@@ -56,25 +89,11 @@ var Renderer = {
 		canvas.width = $(window).width();
 		ctx.clearRect(0,0,canvas.width, canvas.height);
 		
-		ctx.font="20px Georgia";
-		var text = JSON.stringify(pData);
-		var lines = [];
-		for (var i in pData)
-			lines.push(i+": "+pData[i]);
-		var overshoot;
-		while((overshoot = ctx.measureText(lines[lines.length-1]).width/(canvas.width-10))>1) {
-			var tmp = lines[lines.length-1];
-			var i = tmp.length/overshoot -1 | 0;
-			lines[lines.length-1] = tmp.substr(0,i);
-			lines[lines.length] = tmp.substr(i);
-		}
-		text = lines.join("\n");
-		console.log(text);
-		for (var i=0;i<lines.length;i++)
-			ctx.fillText(lines[i], 0, 20 + 20 * i);
+		Renderer.render(ctx);
 		
 		if (Renderer.render)
 			window.requestAnimationFrame(Renderer.renderFrame);
-	}
+	},
+	render: renderDot
 };
-Renderer.render=true;
+Renderer.doRender=true;
