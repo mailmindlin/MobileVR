@@ -29,10 +29,18 @@
 		
 		<link rel="stylesheet" href="main.css"/>
 		<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-		<script src="https://rawgit.com/mailmindlin/MobileVR/gh-pages/symbol.js"></script>
-		<script src="https://rawgit.com/mailmindlin/MobileVR/gh-pages/oop.js"></script>
-		<script src="https://rawgit.com/mailmindlin/MobileVR/gh-pages/webvrpoly.js"></script>
-		<script src="https://rawgit.com/mailmindlin/MobileVR/gh-pages/main.js" async defer></script>
+		<script>
+			if (location.protocol !== 'file:')
+				document.write('<script src="https://rawgit.com/mailmindlin/MobileVR/gh-pages/symbol.js"></script>\
+					<script src="https://rawgit.com/mailmindlin/MobileVR/gh-pages/oop.js"></script>\
+					<script src="https://rawgit.com/mailmindlin/MobileVR/gh-pages/webvrpoly.js"></script>\
+					<script src="https://rawgit.com/mailmindlin/MobileVR/gh-pages/main.js" async defer></script>');
+			else
+				document.write('<script src="symbol.js"></script>\
+					<script src="oop.js"></script>\
+					<script src="webvrpoly.js"></script>\
+					<script src="main.js" async defer></script>');
+		</script>
 	</head>
 	<body>
 		<canvas width="100px" height="100px">
