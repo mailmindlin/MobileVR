@@ -33,7 +33,7 @@
 			'orientation', 'angularVelocity', 'angularAcceleration']);
 	};
 		
-	window.VRDevice = function VRDevice(hardwareUnitId, deviceId, deviceName) {
+	var VRDevice = window.VRDevice = function VRDevice(hardwareUnitId, deviceId, deviceName) {
 		Object.defineProperties(this, {
 			'hardwareUnitId': {
 				configurable: false,
@@ -65,11 +65,11 @@
 			enumerable: true
 	}});
 	
-	window.HMDVRDevice = function HDMVRDevice() {
+	var HDMVRDevice = window.HMDVRDevice = function HDMVRDevice(x) {
 		
 	};
-	HDMVRDevice.prototype = Object.create(VRDevice);
-	HDMVRDevice.prototype = HDMVRDevice;
+	HMDVRDevice.prototype = Object.create(VRDevice);
+	HDMVRDevice.prototype = HMDVRDevice;
 	HDMVRDevice.prototype.getEyeParameters = function(whichEye){
 		return this._getEyeParameters(whichEye);
 	};
@@ -90,10 +90,10 @@
 	PositionSensorVRDevice.prototype.getState = function() {
 		return undefined;
 	};
-	PositionSensorVRDevice.prototype.getImmediateState() {
+	PositionSensorVRDevice.prototype.getImmediateState = function() {
 		return undefined;
 	};
-	PositionSensorVRDevice.prototype.resetSensor() {
+	PositionSensorVRDevice.prototype.resetSensor = function() {
 		return;
 	};
 	
@@ -103,7 +103,7 @@
 	Navigator.prototype.getVRDevices = function() {
 		return Promise.resolve(vrDevices);//TODO seal vrDevices
 	};
-	Navigator.prototype.__registerVRDevice(device) {
+	Navigator.prototype.__registerVRDevice = function(device) {
 		if (!device instanceof VRDevice)
 			throw new TypeError('device is not VRDevice');
 		vrDevices.push(device);
