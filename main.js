@@ -1,5 +1,12 @@
 var canvas = $('canvas')[0];
 var ctx = canvas.getContext('2d');
+Object.defineEnum(window,'Directions',[
+	'up',//'screen' side of device
+	'down',//'back' of device
+	'left',//landscape, rotated right 90deg
+	'right',//landscape, rotated left 90deg
+	'top',//top of device (portrait top)
+	'bottom']);//bottom of device (portrait upsidedown)
 
 $(window).resize(function(){
 	canvas.width = $(window).width();
@@ -7,6 +14,7 @@ $(window).resize(function(){
 });
 $(window).trigger('resize');
 var pData = {
+	orientation: Directions.up,
 	abs: 0,
 	alpha: 0,
 	beta: 0,
@@ -19,13 +27,42 @@ var pData = {
 	gz:0,
 	da:0,
 	db:0,
-	dg:0,
+	dg:0
 };
 window.addEventListener('deviceorientation', function(e) {
 	pData.abs = event.absolute | 0;
-	pData.alpha = event.alpha | 0;
-	pData.beta = event.beta | 0;
-	pData.gamma = event.gamma | 0;
+	switch (pData.orientation) {
+		case Directions.top:
+			pData.alpha = event.alpha | 0;
+			pData.beta = event.beta - 90 | 0;
+			pData.gamma = event.gamma | 0;
+			break;
+		case Directions.bottom:
+			pData.alpha = event.alpha | 0;
+			pData.beta = event.beta + 90 | 0;
+			pData.gamma = event.gamma | 0;
+			break;
+		case Directions.up:
+			pData.alpha = event.alpha | 0;
+			pData.beta = event.beta | 0;
+			pData.gamma = event.gamma | 0;
+			break;
+		case Directions.down:
+			pData.alpha = event.alpha | 0;
+			pData.beta = event.beta - 180 | 0;
+			pData.gamma = event.gamma | 0;
+			break;
+		case Directions.left:
+			pData.alpha = event.alpha + 90 | 0;
+			pData.beta = event.beta | 0;
+			pData.gamma = event.gamma | 0;
+			break;
+		case Directions.right:
+			pData.alpha = event.alpha - 90 | 0;
+			pData.beta = event.beta | 0;
+			pData.gamma = event.gamma | 0;
+			break;
+	}
 }, true);
 window.addEventListener('devicemotion', function(e) {
 	var a=e.acceleration;
@@ -64,17 +101,17 @@ function renderInfo(ctx, width, height) {
 	ctx.stroke();
 	
 	ctx.beginPath();
-	ctx.moveTo((-pData.alpha/180 + 1) * width/2, 105);
+	ctx.moveTo((pData.alpha/180 + 1) * width/2, 105);
 	ctx.lineTo(width/2, 105);
 	ctx.stroke();
 	
 	ctx.beginPath();
-	ctx.moveTo((-pData.beta/180 + 1) * width/2, 115);
+	ctx.moveTo((pData.beta/180 + 1) * width/2, 115);
 	ctx.lineTo(width/2, 115);
 	ctx.stroke();
 	
 	ctx.beginPath();
-	ctx.moveTo((-pData.gamma/180 + 1) * width/2, 120);
+	ctx.moveTo((pData.gamma/180 + 1) * width/2, 120);
 	ctx.lineTo(width/2, 120);
 	ctx.stroke();
 }
