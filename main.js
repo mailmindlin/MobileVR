@@ -1,5 +1,5 @@
 var version = "0.0.0.11";
-matry {
+try {
 console.info(version);
 alert("Version "+version);
 var canvas = $('canvas')[0];
