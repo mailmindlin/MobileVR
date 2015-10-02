@@ -103,7 +103,7 @@ if (!'Symbol' in window) (function() {
 	Object.defineProperty(HiddenSymbol.prototype, Symbol.toStringTag,
 		d('c', Symbol.prototype[Symbol.toStringTag]));
 })();
-Symbol.getName = function(sym) {
+window.getSymbolName = function(sym) {
 	var str = sym.toString();
 	return str.substr(7, str.length-8);
 };
