@@ -1,5 +1,5 @@
 try {
-var version = "0.0.0.8";
+var version = "0.0.0.9";
 console.info(version);
 alert("Version "+version);
 var canvas = $('canvas')[0];
@@ -37,20 +37,31 @@ var pData = {
 	x: 0,
 	y: 0
 };
+function angleRelativeTo(tare, gross) {
+	var _gross = gross % 360, _tare = tare % 360;
+	if (gross<0)
+		_gross += 360;
+	if (tare < 0)
+		_tare += 360;
+	var result = _gross - _tare;
+	if (result>180)
+		result = 360 - result;
+	return result;
+}
 window.addEventListener('deviceorientation', function(e) {
 	pData.abs = event.absolute | 0;
 	pData.alpha = event.alpha | 0;
-	pData.beta = event.beta - 90 | 0;
+	pData.beta = event.beta | 0;
 	pData.gamma = event.gamma | 0;
 	switch (pData.orientation) {
 		case Directions.top:
-			pData.pitch = event.beta - 90 | 0;
+			pData.pitch = angleRelativeTo(90, event.beta) | 0;
 			pData.yaw = event.alpha | 0;
 			pData.roll = event.gamma | 0;
 			break;
 		case Directions.bottom:
 			pData.pitch = event.alpha | 0;
-			pData.yaw = event.beta + 90 | 0;
+			pData.yaw = angleRelativeTo(270, event.beta) | 0;
 			pData.roll = event.gamma | 0;
 			break;
 		case Directions.up:
@@ -59,19 +70,19 @@ window.addEventListener('deviceorientation', function(e) {
 			pData.roll = event.gamma | 0;
 			break;
 		case Directions.down:
-			pData.pitch = event.beta + 180 | 0;
-			pData.yaw = event.alpha + 180 | 0;
+			pData.pitch = angleRelativeTo(180, event.beta) | 0;
+			pData.yaw = angleRelativeTo(180, event.alpha) | 0;
 			pData.roll = event.gamma | 0;
 			break;
 		case Directions.left:
 			pData.pitch = event.gamma | 0;
 			pData.yaw = event.beta | 0;
-			pData.roll = event.alpha + 90 | 0;
+			pData.roll = angleRelativeTo(270, event.alpha) | 0;
 			break;
 		case Directions.right:
 			pData.pitch = event.gamma | 0;
 			pData.yaw = event.beta | 0;
-			pData.roll = event.alpha - 90 | 0;
+			pData.roll = angleRelativeTo(90, event.alpha) | 0;
 			break;
 	}
 }, true);
