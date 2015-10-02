@@ -1,16 +1,9 @@
-var version = "0.0.0.11";
+var version = "0.0.0.12";
 try {
 console.info(version);
 alert("Version "+version);
 var canvas = $('canvas')[0];
 var ctx = canvas.getContext('2d');
-Object.defineEnum(window,'Directions',[
-	'up',//'screen' side of device
-	'down',//'back' of device
-	'left',//landscape, rotated right 90deg
-	'right',//landscape, rotated left 90deg
-	'top',//top of device (portrait top)
-	'bottom']);//bottom of device (portrait upsidedown)
 $(window).resize(function(){
 	canvas.width = $(window).width();
 	canvas.height = $(window).height();
@@ -37,75 +30,9 @@ var pData = {
 	x: 0,
 	y: 0
 };
-window.Angle = {
-	rel0: function (x) {
-		return Angle.rel0s(x%360);
-	},
-	rel0s: function (x) {
-		return x>180?(x-360):(x<-180?(x+360):x);
-	},
-	reluu: function(z, x) {
-		return Angle.rel0s(Angle.rel0(x)-Angle.rel0(z));
-	},
-	relsu: function(z, x) {
-		return Angle.rel0s(Angle.rel0s(x)-Angle.rel0(z));
-	},
-	relus: function(z, x) {
-		return Angle.rel0s(Angle.rel0(x)-Angle.rel0s(z));
-	},
-	relss: function(z, x) {
-		return Angle.rel0s(Angle.rel0s(x)-Angle.rel0s(z));
-	}
-};
-function angleRelativeTo(tare, gross) {
-	var _gross = gross % 360, _tare = tare % 360;
-	var result = _gross - _tare;
-	if (result>180)
-		result = 360 - result;
-	if (result<-180)
-		result = -360 - result;
-	return result;
-}
-window.addEventListener('deviceorientation', function(e) {
-	pData.abs = event.absolute | 0;
-	pData.alpha = event.alpha | 0;
-	pData.beta = event.beta | 0;
-	pData.gamma = event.gamma | 0;
-	switch (pData.orientation) {
-		case Directions.top:
-			pData.pitch = Angle.rel0(event.beta) | 0;
-			pData.yaw   = Angle.rel0(event.alpha) | 0;
-			pData.roll  = Angle.rel0(event.gamma) | 0;
-			break;
-		case Directions.bottom:
-			pData.pitch = Angle.rel0(event.beta) | 0;
-			pData.yaw   = Angle.rel0(event.alpha) | 0;
-			pData.roll  = Angle.relsu(180, event.gamma) | 0;
-			break;
-		case Directions.up:
-			pData.pitch = Angle.rel0(event.beta) | 0;
-			pData.yaw   = Angle.rel0(event.alpha) | 0;
-			pData.roll  = Angle.rel0(event.gamma) | 0;
-			break;
-		case Directions.down:
-			pData.pitch = Angle.relsu(180,event.beta)  | 0;
-			pData.yaw   = Angle.relsu(180,event.alpha) | 0;
-			pData.roll  = Angle.rel0(event.gamma) | 0;
-			break;
-		case Directions.left:
-			pData.pitch = Angle.rel0(event.gamma) | 0;
-			pData.yaw   = Angle.rel0(event.alpha) | 0;
-			pData.roll  = Angle.rel0(event.beta)  | 0;
-			break;
-		case Directions.right:
-			pData.pitch = Angle.relsu(270, event.gamma) | 0;
-			pData.yaw   = Angle.rel0(event.alpha) | 0;
-			pData.roll  = Angle.rel0(event.beta) | 0;
-			break;
-	}
-}, true);
+window.gsd=false;
 $(canvas).click(function() {
-	pData.orientation = Directions[(Directions.indexOf(pData.orientation) + 1) % Directions.length];
+	PositionController.orientation = Directions[(Directions.indexOf(PositionController.orientation) + 1) % Directions.length];
 });
 window.addEventListener('devicemotion', function(e) {
 	var a=e.acceleration;
@@ -121,6 +48,7 @@ window.addEventListener('devicemotion', function(e) {
 	pData.db = d.beta;
 	pData.dg = d.gamma;
 }, true);
+PositionController.init();
 function drawScale(ctx, x, y, value, range, width) {
 	//console.log(value, (value/range + 1) * width, y);
 	ctx.beginPath();
@@ -130,10 +58,10 @@ function drawScale(ctx, x, y, value, range, width) {
 }
 function renderInfo(ctx, width, height) {
 	ctx.font="20px Georgia";
-	var text = JSON.stringify(pData);
-	var lines = ['o: ' + pData.orientation.toString(),"",
-		"α: " + pData.alpha,"β: " + pData.beta,"γ: " + pData.gamma,"",
-		"p: "+pData.pitch, "y: "+pData.yaw, "r: "+pData.roll,"",
+	var text = JSON.stringify(PositionController);
+	var lines = ['o: ' + PositionController.orientation.toString(),"",
+		"α: " + PositionController.alpha,"β: " + PositionController.beta,"γ: " + PositionController.gamma,"",
+		"p: "+PositionController.pitch, "y: "+PositionController.yaw, "r: "+PositionController.roll,"",
 		'x: '+pData.x, 'y: '+pData.y];
 	var overshoot;
 	while((overshoot = ctx.measureText(lines[lines.length-1]).width/(canvas.width-10))>1) {
@@ -154,13 +82,13 @@ function renderInfo(ctx, width, height) {
 	ctx.lineTo(width/2, 200);
 	ctx.stroke();
 	
-	drawScale(ctx, width/2, 75, Angle.rel0( pData.alpha), 180, width/2);
-	drawScale(ctx, width/2, 95, Angle.rel0( pData.beta), 180, width/2);
-	drawScale(ctx, width/2, 115, Angle.rel0( pData.gamma), 180, width/2);
+	drawScale(ctx, width/2, 75, Angle.rel0( PositionController.alpha), 180, width/2);
+	drawScale(ctx, width/2, 95, Angle.rel0( PositionController.beta), 180, width/2);
+	drawScale(ctx, width/2, 115, Angle.rel0( PositionController.gamma), 180, width/2);
 	
-	drawScale(ctx, width/2, 155, pData.pitch, 180, width/2);
-	drawScale(ctx, width/2, 175, pData.yaw, 180, width/2);
-	drawScale(ctx, width/2, 195, pData.roll, 180, width/2);
+	drawScale(ctx, width/2, 155, PositionController.pitch, 180, width/2);
+	drawScale(ctx, width/2, 175, PositionController.yaw, 180, width/2);
+	drawScale(ctx, width/2, 195, PositionController.roll, 180, width/2);
 }
 function renderDot(ctx) {
 	

@@ -4,67 +4,58 @@ try {
 	
 	Object.defineEnum(window, 'VREye', ['left','right']);
 	
-	window.VRPositionState = function VRPositionState(args) {
-		this.timestamp = args.timestamp || Date.now()/1000.0;
-		if(this.hasPosition = ('position' in args)) {
-			if (!args.position instanceof DOMPoint)
-				throw new TypeError('args.position not DOMPoint');
-			this.position = args.position;
-		}
-		
-		if ('linearVelocity' in args)
-			this.linearVelocity = args.linearVelocity;
-		
-		if ('linearAcceleration' in args)
-			this.linearAcceleration = args.linearAcceleration;
-		
-		if (this.hasOrientation = ('orientation' in args)) {
-			if (!args.orientation instanceof DOMPoint)
-				throw new TypeError('args.orientation not DOMPoint');
-			this.orientation = orientation;
-		}
-		
-		if ('angularVelocity' in args)
-			this.angularVelocity = args.angularVelocity;
-		
-		if ('angularAcceleration' in args)
-			this.angularAcceleration = args.angularAcceleration;
-		
-		Object.makeConst(this, ['timestamp', 'hasPosition', 'position', 'linearVelocity', 'linearAcceleration', 'hasOrientation',
-			'orientation', 'angularVelocity', 'angularAcceleration']);
-	};
-		
-	var VRDevice = window.VRDevice = function VRDevice(hardwareUnitId, deviceId, deviceName) {
-		Object.defineProperties(this, {
-			'hardwareUnitId': {
-				configurable: false,
-				enumerable: true,
-				value: hardwareUnitId
-			},
-			'deviceId': {
-				configurable: false,
-				enumerable: true,
-				value: deviceId
-			},
-			'deviceName': {
-				configurable: false,
-				enumerable: true,
-				value: deviceName
-		}});
-	};
-	Object.defineProperties(VRDevice.prototype, {
-		'hardwareUnitId': {
-			configurable: false,
-			enumerable: true
+	window.VRPositionState = Class.extend({
+		__constrname: 'VRPositionState(args)',
+		get timestamp() {
+			return undefined;
 		},
-		'deviceId': {
-			configurable: false,
-			enumerable: true
+		get hasPosition() {
+			return undefined;
 		},
-		'deviceName': {
-			configurable: false,
-			enumerable: true
-	}});
+		__set: function(name, value) {
+			this.__defineGetter__(name, function(){return value;});
+			return value;
+		},
+		init: function(args) {
+			this.__set('timestamp',args.timestamp || Date.now()/1000.0);
+			if(this.__set('hasPosition','position' in args)) {
+				if (!args.position instanceof DOMPoint)
+					throw new TypeError('args.position not DOMPoint');
+				this.__set('position',args.position);
+			}
+		
+			if ('linearVelocity' in args)
+				this.__set('linearVelocity',args.linearVelocity);
+			
+			if ('linearAcceleration' in args)
+				this.__set('linearAcceleration',args.linearAcceleration);
+			
+			if (this.__set('hasOrientation',('orientation' in args))) {
+				if (!args.orientation instanceof DOMPoint)
+					throw new TypeError('args.orientation not DOMPoint');
+				this.__set('orientation',args.orientation);
+			}
+			
+			if ('angularVelocity' in args)
+				this.__set('angularVelocity',args.angularVelocity);
+			
+			if ('angularAcceleration' in args)
+				this.__set('angularAcceleration',args.angularAcceleration);
+			
+			Object.makeConst(this, ['timestamp', 'hasPosition', 'position', 'linearVelocity', 'linearAcceleration', 'hasOrientation',
+				'orientation', 'angularVelocity', 'angularAcceleration']);
+		}
+	});
+	
+	var VRDevice = window.VRDevice = Class.extend({
+		//__constrname: 'VRDevice(hardwareUnitId, deviceId, deviceName)',
+		hardwareUnitId: undefined,
+		deviceId: undefined,
+		deviceName: undefined,
+		init: function VRDevice(hardwareUnitId, deviceId, deviceName) {
+			
+		}
+	});
 	
 	var HDMVRDevice = window.HMDVRDevice = function HDMVRDevice(x) {
 		
