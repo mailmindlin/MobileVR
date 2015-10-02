@@ -1,5 +1,5 @@
 try {
-var version = "0.0.0.7";
+var version = "0.0.0.8";
 console.info(version);
 alert("Version "+version);
 var canvas = $('canvas')[0];
@@ -134,8 +134,8 @@ function renderInfo(ctx, width, height) {
 }
 function renderDot(ctx) {
 	
-	var x = canvas.width/2 + pData.yaw;
-	var y = canvas.height/2 + pData.pitch;
+	var x = canvas.width/2 + 2 * pData.yaw;
+	var y = canvas.height/2 + 2 * pData.pitch;
 	pData.x = x - canvas.width/2;
 	pData.y = y - canvas.height/2;
 	
