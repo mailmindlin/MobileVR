@@ -1,3 +1,4 @@
+try {
 function isset(a){return typeof a!=='undefined';}
 (function(){
 	var initializing = false, fnTest = /xyz/.test(function(){xyz;}) ? /\b_super\b/ : /.*/;
@@ -75,3 +76,8 @@ function isset(a){return typeof a!=='undefined';}
 		return Class;
 	};
 })();
+} catch(e) {
+if (isMobile) {
+window.onerror(e.message, "class.js", 0,0, e);
+throw e;
+}
