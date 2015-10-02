@@ -73,14 +73,14 @@ window.addEventListener('deviceorientation', function(e) {
 	pData.gamma = event.gamma | 0;
 	switch (pData.orientation) {
 		case Directions.top:
-			pData.pitch = Angle.relsu(90, event.beta) | 0;
+			pData.pitch = Angle.rel0(event.beta) | 0;
 			pData.yaw   = Angle.rel0(event.alpha) | 0;
 			pData.roll  = Angle.rel0(event.gamma) | 0;
 			break;
 		case Directions.bottom:
-			pData.pitch = Angle.relsu(180,event.alpha) | 0;
-			pData.yaw   = Angle.relsu(270,event.beta) | 0;
-			pData.roll  = Angle.rel0(event.gamma) | 0;
+			pData.pitch = Angle.rel0(event.beta) | 0;
+			pData.yaw   = Angle.rel0(event.alpha) | 0;
+			pData.roll  = Angle.relsu(180, event.gamma) | 0;
 			break;
 		case Directions.up:
 			pData.pitch = Angle.rel0(event.beta) | 0;
@@ -94,13 +94,13 @@ window.addEventListener('deviceorientation', function(e) {
 			break;
 		case Directions.left:
 			pData.pitch = Angle.rel0(event.gamma) | 0;
-			pData.yaw   = Angle.rel0(event.beta) | 0;
-			pData.roll  = Angle.relsu(270,event.alpha) | 0;
+			pData.yaw   = Angle.rel0(event.alpha) | 0;
+			pData.roll  = Angle.rel0(,event.beta) | 0;
 			break;
 		case Directions.right:
-			pData.pitch = Angle.rel0(event.gamma) | 0;
-			pData.yaw   = Angle.rel0(event.beta) | 0;
-			pData.roll  = Angle.relsu(90,event.alpha) | 0;
+			pData.pitch = Angle.relsu(270, event.gamma) | 0;
+			pData.yaw   = Angle.rel0(event.alpha) | 0;
+			pData.roll  = Angle.rel0(event.beta) | 0;
 			break;
 	}
 }, true);
