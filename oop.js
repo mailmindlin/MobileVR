@@ -1,3 +1,4 @@
+try {
 (function() {
 	Object.defineEnum = function(scope, name, arr) {
 		var symbols = [];
@@ -20,3 +21,9 @@
 		
 	};
 })();
+}catch (e) {
+	if (isMobile)
+		window.onerror(e.message, "oop.js", e.lineNumber, 0, e);
+	else
+		throw e;
+}

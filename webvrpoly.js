@@ -1,3 +1,4 @@
+try {
 (function() {
 	function isset(a) {return typeof a !== 'undefined'};
 	
@@ -109,3 +110,9 @@
 		vrDevices.push(device);
 	};
 })();
+}catch (e) {
+	if (isMobile)
+		window.onerror(e.message, "webvrpoly.js", e.lineNumber, 0, e);
+	else
+		throw e;
+}

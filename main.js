@@ -1,4 +1,5 @@
-var version = "0.0.0.5";
+try {
+var version = "0.0.0.6";
 console.info(version);
 var canvas = $('canvas')[0];
 var ctx = canvas.getContext('2d');
@@ -9,7 +10,6 @@ Object.defineEnum(window,'Directions',[
 	'right',//landscape, rotated left 90deg
 	'top',//top of device (portrait top)
 	'bottom']);//bottom of device (portrait upsidedown)
-
 $(window).resize(function(){
 	canvas.width = $(window).width();
 	canvas.height = $(window).height();
@@ -32,7 +32,9 @@ var pData = {
 	dg:0,
 	pitch: 0,
 	yaw: 0,
-	roll: 0
+	roll: 0,
+	x: 0,
+	y: 0
 };
 window.addEventListener('deviceorientation', function(e) {
 	pData.abs = event.absolute | 0;
@@ -41,8 +43,8 @@ window.addEventListener('deviceorientation', function(e) {
 	pData.gamma = event.gamma | 0;
 	switch (pData.orientation) {
 		case Directions.top:
-			pData.pitch = event.alpha | 0;
-			pData.yaw = event.beta - 90 | 0;
+			pData.pitch = event.beta - 90 | 0;
+			pData.yaw = event.alpha | 0;
 			pData.roll = event.gamma | 0;
 			break;
 		case Directions.bottom:
@@ -72,6 +74,9 @@ window.addEventListener('deviceorientation', function(e) {
 			break;
 	}
 }, true);
+$(canvas).click(function() {
+	pData.orientation = Directions[(Directions.indexOf(pData.orientation) + 1) % Directions.length];
+});
 window.addEventListener('devicemotion', function(e) {
 	var a=e.acceleration;
 	pData.ax = a.x;
@@ -89,8 +94,10 @@ window.addEventListener('devicemotion', function(e) {
 function renderInfo(ctx, width, height) {
 	ctx.font="20px Georgia";
 	var text = JSON.stringify(pData);
-	var lines = ["α: " + pData.alpha,"β: " + pData.beta,"γ: " + pData.gamma,
-		"p: "+pData.pitch, "y: "+pData.yaw, "r: "+pData.roll];
+	var lines = ['o: ' + Symbol.getName(pData.orientation),"",
+		"α: " + pData.alpha,"β: " + pData.beta,"γ: " + pData.gamma,"",
+		"p: "+pData.pitch, "y: "+pData.yaw, "r: "+pData.roll,"",
+		'x: '+pData.x, 'y: '+pData.y];
 	var overshoot;
 	while((overshoot = ctx.measureText(lines[lines.length-1]).width/(canvas.width-10))>1) {
 		var tmp = lines[lines.length-1];
@@ -99,7 +106,7 @@ function renderInfo(ctx, width, height) {
 		lines[lines.length] = tmp.substr(i);
 	}
 	text = lines.join("\n");
-	console.log(text);
+	//console.log(text);
 	for (var i=0;i<lines.length;i++)
 		ctx.fillText(lines[i], 0, 20 + 20 * i);
 	
@@ -125,19 +132,17 @@ function renderInfo(ctx, width, height) {
 	ctx.stroke();
 }
 function renderDot(ctx) {
-	var g = 0;
-	var b = 90;
-	var ra = (pData.gamma<180?pData.gamma:360-pData.gamma) - g;
-	var rb = b - pData.beta;
 	
-	var x = canvas.width/2 + 2 * ra;
-	var y = canvas.height/2 - 2 * rb;
+	var x = canvas.width/2 + pData.yaw;
+	var y = canvas.height/2 + pData.pitch;
+	pData.x = x - canvas.width/2;
+	pData.y = y - canvas.height/2;
 	
 	ctx.fillStyle = '#000';
 	ctx.beginPath();
 	ctx.arc(x, y, 10, 0, 6.29);
 	ctx.fill();
-	console.log(ra,rb, pData.beta);
+	//console.log(ra,rb, pData.beta);
 }
 var Renderer = {
 	_doRender: true,
@@ -150,7 +155,7 @@ var Renderer = {
 		return this._doRender;
 	},
 	renderFrame: function(timestamp) {
-		console.log('rendering');
+		//console.log('rendering');
 		canvas.width = $(window).width();
 		ctx.clearRect(0,0,canvas.width, canvas.height);
 		
@@ -163,3 +168,10 @@ var Renderer = {
 	render: renderDot
 };
 Renderer.doRender=true;
+
+}catch (e) {
+	if (isMobile)
+		window.onerror(e.message, "main.js", e.lineNumber, 0, e);
+	else
+		throw e;
+}

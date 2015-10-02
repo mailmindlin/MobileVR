@@ -1,3 +1,4 @@
+try {
 //Adapted from https://github.com/medikoo/es6-symbol/blob/master/polyfill.js
 if (!'Symbol' in window) (function() {
 	var d,
@@ -102,3 +103,13 @@ if (!'Symbol' in window) (function() {
 	Object.defineProperty(HiddenSymbol.prototype, Symbol.toStringTag,
 		d('c', Symbol.prototype[Symbol.toStringTag]));
 })();
+Symbol.getName = function(sym) {
+	var str = sym.toString();
+	return str.substr(7, str.length-8);
+};
+}catch (e) {
+	if (isMobile)
+		window.onerror(e.message, "symbol.js", e.lineNumber, 0, e);
+	else
+		throw e;
+}
