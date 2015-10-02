@@ -5,7 +5,6 @@ try {
 	Object.defineEnum(window, 'VREye', ['left','right']);
 	
 	window.VRPositionState = Class.extend({
-		__constrname: 'VRPositionState(args)',
 		get timestamp() {
 			return undefined;
 		},
@@ -16,7 +15,7 @@ try {
 			this.__defineGetter__(name, function(){return value;});
 			return value;
 		},
-		init: function(args) {
+		init: function VRPositionState(args) {
 			this.__set('timestamp',args.timestamp || Date.now()/1000.0);
 			if(this.__set('hasPosition','position' in args)) {
 				if (!args.position instanceof DOMPoint)
@@ -48,7 +47,6 @@ try {
 	});
 	
 	var VRDevice = window.VRDevice = Class.extend({
-		//__constrname: 'VRDevice(hardwareUnitId, deviceId, deviceName)',
 		hardwareUnitId: undefined,
 		deviceId: undefined,
 		deviceName: undefined,

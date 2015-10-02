@@ -1,4 +1,4 @@
-var version = "0.0.0.12";
+var version = "0.0.0.13";
 try {
 console.info(version);
 alert("Version "+version);

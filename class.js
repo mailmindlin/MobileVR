@@ -72,12 +72,13 @@ function isset(a){return typeof a!=='undefined';}
 		Class.extend = arguments.callee;
 		
 		if (prop.__constrname)
-			Class.toString = Class.constructor.toString = function(){return prop.__constrname;};
+			Class.toString = Class.constructor.toString;
 		return Class;
 	};
 })();
 } catch(e) {
-if (isMobile) {
-window.onerror(e.message, "class.js", 0,0, e);
-throw e;
+	if (isMobile)
+		window.onerror(e.message, "oop.js", e.lineNumber, 0, e);
+	else
+		throw e;
 }
