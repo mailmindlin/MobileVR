@@ -104,6 +104,8 @@ if (!'Symbol' in window) (function() {
 		d('c', Symbol.prototype[Symbol.toStringTag]));
 })();
 window.getSymbolName = function(sym) {
+	if (typeof sym === 'string')
+		return sym;
 	var str = sym.toString();
 	return str.substr(7, str.length-8);
 };

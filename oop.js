@@ -7,7 +7,7 @@ try {
 			if (arr[i].toString().indexOf('Symbol')==0)//the best check of arr[i] instanceof Symbol that I could come up with
 				sym = arr[i];
 			else
-				sym = Symbol(arr[i]);
+				sym = window.Symbol && Symbol(arr[i]) || arr[i];
 			symbols[i] = symbols[arr[i]] = symbols[sym] = sym;
 		}
 		Object.defineProperty(scope, name, {configurable: false, enumerable: true, get: function(){return symbols;}});
