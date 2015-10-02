@@ -37,7 +37,6 @@
 				window.onerror = function(msg, url, linenumber,colnumber,eobj) {
 					if (eobj && eobj.stack)
 						alert(eobj.stack);
-					else
 						alert('Error message: '+msg+'\nURL: '+url+'\nLine Number: '+linenumber);
 					return true;
 				};
