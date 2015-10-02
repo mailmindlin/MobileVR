@@ -1,5 +1,5 @@
-try {
-var version = "0.0.0.10";
+var version = "0.0.0.11";
+matry {
 console.info(version);
 alert("Version "+version);
 var canvas = $('canvas')[0];
@@ -95,7 +95,7 @@ window.addEventListener('deviceorientation', function(e) {
 		case Directions.left:
 			pData.pitch = Angle.rel0(event.gamma) | 0;
 			pData.yaw   = Angle.rel0(event.alpha) | 0;
-			pData.roll  = Angle.rel0(,event.beta) | 0;
+			pData.roll  = Angle.rel0(event.beta)  | 0;
 			break;
 		case Directions.right:
 			pData.pitch = Angle.relsu(270, event.gamma) | 0;
