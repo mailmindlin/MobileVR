@@ -71,7 +71,7 @@ function isset(a){return typeof a!=='undefined';}
 		Class.extend = arguments.callee;
 		
 		if (prop.__constrname)
-			Class.constructor.toString=function(){return prop.__constrname;};
+			Class.toString = Class.constructor.toString = function(){return prop.__constrname;};
 		return Class;
 	};
 })();
