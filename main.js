@@ -1,6 +1,7 @@
 try {
-var version = "0.0.0.6";
+var version = "0.0.0.7";
 console.info(version);
+alert("Version "+version);
 var canvas = $('canvas')[0];
 var ctx = canvas.getContext('2d');
 Object.defineEnum(window,'Directions',[
