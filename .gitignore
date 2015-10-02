@@ -44,3 +44,8 @@ Temporary Items
 
 .metadata
 .recommenders
+.classpath
+.project
+bin
+*.class
+*.jar
