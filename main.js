@@ -95,7 +95,7 @@ window.addEventListener('devicemotion', function(e) {
 function renderInfo(ctx, width, height) {
 	ctx.font="20px Georgia";
 	var text = JSON.stringify(pData);
-	var lines = ['o: ' + getSymbolName(pData.orientation),"",
+	var lines = ['','o: ' + pData.orientation.toString(),"",
 		"α: " + pData.alpha,"β: " + pData.beta,"γ: " + pData.gamma,"",
 		"p: "+pData.pitch, "y: "+pData.yaw, "r: "+pData.roll,"",
 		'x: '+pData.x, 'y: '+pData.y];
