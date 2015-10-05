@@ -48,6 +48,12 @@ var PositionController = {
 		this._data.da = d.alpha;
 		this._data.db = d.beta;
 		this._data.dg = d.gamma;
+		if (Math.abs(d.alpha)>1)
+			console.log('da:',d.alpha);
+		if (Math.abs(d.beta)>1)
+			console.log('da:',d.beta);
+		if (Math.abs(d.gamma)>1)
+			console.log('da:',d.gamma);
 	},
 	devorientation: function(event) {
 		console.log(event);

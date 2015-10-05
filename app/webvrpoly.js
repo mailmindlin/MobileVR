@@ -55,37 +55,31 @@ try {
 		}
 	});
 	
-	var HDMVRDevice = window.HMDVRDevice = function HDMVRDevice(x) {
-		
-	};
-	HMDVRDevice.prototype = Object.create(VRDevice);
-	HDMVRDevice.prototype = HMDVRDevice;
-	HDMVRDevice.prototype.getEyeParameters = function(whichEye){
-		return this._getEyeParameters(whichEye);
-	};
-	HDMVRDevice.prototype.setFieldOfView = function(leftFOV, rightFOV, zNear, zFar){
-		var args = [leftFOV, rightFOV, zNear, zFar];
-		if (typeof zNear === 'undefined')
-			args[2] = 0.01;
-		if (typeof zFar === 'undefined')
-			args[3] = 10000.0;
-		return this._setFieldOfView.apply(this, args);
-	};
+	var HDMVRDevice = window.HMDVRDevice = Class.extend({
+		getEyeParameters: function(whichEye) {
+			return this._getEyeParameters(whichEye);
+		},
+		setFieldOfView: function(leftFOV, rightFOV, zNear, zFar) {
+			var args = [leftFOV, rightFOV, zNear, zFar];
+			if (typeof zNear === 'undefined')
+				args[2] = 0.01;
+			if (typeof zFar === 'undefined')
+				args[3] = 10000.0;
+			return this._setFieldOfView.apply(this, args);
+		}
+	});
 	
-	window.PositionSensorVRDevice = function PositionSensorVRDevice() {
-		
-	};
-	PositionSensorVRDevice.prototype = Object.create(VRDevice);
-	PositionSensorVRDevice.prototype.constructor = PositionSensorVRDevice;
-	PositionSensorVRDevice.prototype.getState = function() {
-		return undefined;
-	};
-	PositionSensorVRDevice.prototype.getImmediateState = function() {
-		return undefined;
-	};
-	PositionSensorVRDevice.prototype.resetSensor = function() {
-		return;
-	};
+	var PositionSensorVRDevice = window.PositionSensorVRDevice =  Class.extend({
+		getState: function() {
+			return undefined;
+		},
+		getImmediateState: function() {
+			return undefined;
+		},
+		resetSensor: function() {
+			return;
+		}
+	});
 	
 	
 	
