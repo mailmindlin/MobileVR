@@ -9,46 +9,15 @@ $(window).resize(function(){
 	canvas.height = $(window).height();
 });
 $(window).trigger('resize');
-var pData = {
-	orientation: Directions.up,
-	abs: 0,
-	alpha: 0,
-	beta: 0,
-	gamma: 0,
-	ax:0,
-	ay:0,
-	az:0,
-	gx:0,
-	gy:0,
-	gz:0,
-	da:0,
-	db:0,
-	dg:0,
-	pitch: 0,
-	yaw: 0,
-	roll: 0,
-	x: 0,
-	y: 0
-};
 window.gsd=false;
 $(canvas).click(function() {
 	PositionController.orientation = Directions[(Directions.indexOf(PositionController.orientation) + 1) % Directions.length];
 });
-window.addEventListener('devicemotion', function(e) {
-	var a=e.acceleration;
-	pData.ax = a.x;
-	pData.ay = a.y;
-	pData.az = a.z;
-	var g = e.accelerationIncludingGravity;
-	pData.gx = g.x;
-	pData.gy = g.y;
-	pData.gz = g.z;
-	var d = e.rotationRate;
-	pData.da = d.alpha;
-	pData.db = d.beta;
-	pData.dg = d.gamma;
-}, true);
 PositionController.init();
+function drawIpInput(ctx, width, height) {
+	var buttons = [];
+	
+}
 function drawScale(ctx, x, y, value, range, width) {
 	//console.log(value, (value/range + 1) * width, y);
 	ctx.beginPath();

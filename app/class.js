@@ -82,4 +82,3 @@ function isset(a){return typeof a!=='undefined';}
 	else
 		throw e;
 }
-alert('class.js loaded');
