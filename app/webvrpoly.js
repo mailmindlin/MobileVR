@@ -55,39 +55,39 @@ try {
 		}
 	});
 	
-	var HDMVRDevice = window.HMDVRDevice = function HDMVRDevice(x) {
-		
-	};
-	HMDVRDevice.prototype = Object.create(VRDevice);
-	HDMVRDevice.prototype = HMDVRDevice;
-	HDMVRDevice.prototype.getEyeParameters = function(whichEye){
-		return this._getEyeParameters(whichEye);
-	};
-	HDMVRDevice.prototype.setFieldOfView = function(leftFOV, rightFOV, zNear, zFar){
-		var args = [leftFOV, rightFOV, zNear, zFar];
-		if (typeof zNear === 'undefined')
-			args[2] = 0.01;
-		if (typeof zFar === 'undefined')
-			args[3] = 10000.0;
-		return this._setFieldOfView.apply(this, args);
-	};
+	var HDMVRDevice = window.HMDVRDevice = VRDevice.extend({
+		getEyeParameters: function(whichEye){
+			return this._getEyeParameters(whichEye);
+		},
+		setFieldOfView: function(leftFOV, rightFOV, zNear, zFar){
+			var args = [leftFOV, rightFOV, zNear, zFar];
+			if (typeof zNear === 'undefined')
+				args[2] = 0.01;
+			if (typeof zFar === 'undefined')
+				args[3] = 10000.0;
+			return this._setFieldOfView.apply(this, args);
+		},
+		init: function(hardwareUnitId, deviceId, deviceName, getEyeParameters, setFieldOfView) {
+			this._super(hardwareUnitId, deviceId, deviceName);
+			this._getEyeParameters = getEyeParameters;
+			this._setFieldOfView = setFieldOfView;
+		}
+	});
 	
-	window.PositionSensorVRDevice = function PositionSensorVRDevice() {
-		
-	};
-	PositionSensorVRDevice.prototype = Object.create(VRDevice);
-	PositionSensorVRDevice.prototype.constructor = PositionSensorVRDevice;
-	PositionSensorVRDevice.prototype.getState = function() {
-		return undefined;
-	};
-	PositionSensorVRDevice.prototype.getImmediateState = function() {
-		return undefined;
-	};
-	PositionSensorVRDevice.prototype.resetSensor = function() {
-		return;
-	};
-	
-	
+	var PositionSensorVRDevice = VRDevice.extend({
+		getState: function() {
+			return undefined;
+		},
+		getImmediateState: function() {
+			return this.getState();
+		},
+		resetSensor: function() {
+			return;
+		},
+		init: function(hardwareUnitId, deviceId, deviceName) {
+			this._super(hardwareUnitId, deviceId, deviceName);
+		}
+	});
 	
 	var vrDevices = [];
 	Navigator.prototype.getVRDevices = function() {

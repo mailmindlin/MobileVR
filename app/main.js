@@ -1,9 +1,9 @@
 var version = "0.0.0.13";
 try {
 console.info(version);
-alert("Version "+version);
+if (isMobile)
+	alert("Version "+version);
 var canvas = $('canvas')[0];
-var ctx = canvas.getContext('2d');
 $(window).resize(function(){
 	canvas.width = $(window).width();
 	canvas.height = $(window).height();
@@ -14,9 +14,51 @@ $(canvas).click(function() {
 	PositionController.orientation = Directions[(Directions.indexOf(PositionController.orientation) + 1) % Directions.length];
 });
 PositionController.init();
-function drawIpInput(ctx, width, height) {
-	var buttons = [];
-	
+function drawIpInput() {
+	return test();
+	var panel = new Interface.Panel({
+		container: canvas
+	});
+	panel.background = 'black';
+	var btn = new Interface.Button({ 
+		bounds:[.05,.05,.3,.9],  
+		label:'toggle'  
+	});
+	panel.add(btn);
+	var buttons = ['1','2','3','4','5','6','7','8','9','.','0','->'];
+	buttons.forEach(function(label, i, arr) {
+		var bounds = [.05 + .3 * (i % 3), .1 + .2125 * Math.floor(i/3), .3, .2125];
+		buttons[i] = new Interface.Button({
+			bounds: bounds,
+			label: label
+		});
+		console.log(bounds, label, buttons[i]);
+		//panel.add(buttons[i]);
+	});
+	console.log(buttons, panel);
+}
+function test() {
+	var a = new Interface.Panel({ 
+		container: canvas
+	});
+
+	var b = new Interface.Button({ 
+		bounds:[.05,.05,.3,.9],  
+		label:'toggle'  
+	});
+	var c = new Interface.Button({ 
+		bounds:[.35,.05,.3,.9],
+		label:'momentary',
+		mode:'momentary'  
+	});
+	var d = new Interface.Button({ 
+		bounds:[.65,.05,.3,.9],
+		label:'contact',
+		mode:'contact'  
+	});
+
+	a.background = 'black';   
+	a.add(b,c,d);
 }
 function drawScale(ctx, x, y, value, range, width) {
 	//console.log(value, (value/range + 1) * width, y);
@@ -87,15 +129,15 @@ var Renderer = {
 		canvas.width = $(window).width();
 		ctx.clearRect(0,0,canvas.width, canvas.height);
 		
-		renderInfo(ctx, canvas.width, canvas.height);
-		renderDot(ctx, canvas.width, canvas.height);
+		Renderer.render(ctx, canvas.width, canvas.height);
 		
 		if (Renderer.render)
 			window.requestAnimationFrame(Renderer.renderFrame);
 	},
 	render: renderDot
 };
-Renderer.doRender=true;
+//Renderer.doRender=true;
+drawIpInput();
 
 }catch (e) {
 	if (isMobile)
