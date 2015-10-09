@@ -78,7 +78,7 @@ function isset(a){return typeof a!=='undefined';}
 })();
 } catch(e) {
 	if (isMobile)
-		window.onerror(e.message, "oop.js", e.lineNumber, 0, e);
+		window.onerror(e.message, "class.js", e.lineNumber, 0, e);
 	else
 		throw e;
 }

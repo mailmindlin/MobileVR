@@ -28,7 +28,18 @@ window.Angle = {
 };
 var PositionController = {
 	_data: {
-		orientation: Directions.top
+		rotation: Directions.top,
+		dx: 0,
+		dy: 0,
+		dz: 0,
+		x: 0,
+		y: 0,
+		z: 0
+	},
+	_offsets: {
+		alpha: 0,
+		beta: 0,
+		gamma: 0
 	},
 	init: function() {
 		window.addEventListener('devicemotion',PositionController.devmotion.bind(PositionController), true);
@@ -37,9 +48,9 @@ var PositionController = {
 	devmotion: function(event) {
 		console.log(event);
 		var a=event.acceleration;
-		this._data.ax = a.x;
-		this._data.ay = a.y;
-		this._data.az = a.z;
+		this._data.x+= (this._data.dx = this._data.dx + (this._data.ddx = a.x));
+		this._data.y+= (this._data.dy = this._data.dy + (this._data.ddy = a.y));
+		this._data.z+= (this._data.dz = this._data.dz + (this._data.ddz = a.z));
 		var g = event.accelerationIncludingGravity;
 		this._data.gx = g.x;
 		this._data.gy = g.y;
@@ -48,6 +59,12 @@ var PositionController = {
 		this._data.da = d.alpha;
 		this._data.db = d.beta;
 		this._data.dg = d.gamma;
+		if (Math.abs(d.alpha)>1)
+			console.log('da:',d.alpha);
+		if (Math.abs(d.beta)>1)
+			console.log('da:',d.beta);
+		if (Math.abs(d.gamma)>1)
+			console.log('da:',d.gamma);
 	},
 	devorientation: function(event) {
 		console.log(event);
@@ -97,11 +114,20 @@ var PositionController = {
 	get alpha() {
 		return this._data.alpha || 0;
 	},
+	set alpha(value) {
+		this._offsets.alpha = this.alpha - value;
+	},
 	get beta() {
 		return this._data.alpha || 0;
 	},
+	set beta(value) {
+		this._offsets.beta = this.beta - value;
+	},
 	get gamma() {
 		return this._data.alpha || 0;
+	},
+	set gamma(value) {
+		this._offsets.gamma = this.gamma - value;
 	},
 	get pitch() {
 		return this._data.pitch || 0;
@@ -112,14 +138,29 @@ var PositionController = {
 	get roll() {
 		return this._data.roll || 0;
 	},
-	get orientation() {
-		return this._data.orientation;
+	get rotation() {
+		return this._data.rotation;
 	},
-	set orientation(o) {
+	set rotation(o) {
 		if (Directions.indexOf(o)<0)
 			throw new TypeError("Object is not instance of Directions");
-		this._data.orientation = o;
+		this._data.rotation = o;
 		this.updatePYR();
+	},
+	get orientation() {
+		return new DOMPoint(this.pitch, this.yaw, this.roll);
+	},
+	get angularVelocity() {
+		return new DOMPoint(this._data.da, this._data.db, this._data.dg);
+	},
+	get position() {
+		return new DOMPoint(this._data.x, this._data.y, this._data.z);
+	},
+	get linearVelocity() {
+		return new DOMPoint(this._data.dx, this._data.dy, this._data.dz);
+	},
+	get linearAcceleration() {
+		return new DOMPoint(this._data.ddx, this._data.ddy, this._data.ddz);
 	}
 };
 }catch (e) {
