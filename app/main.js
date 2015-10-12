@@ -20,9 +20,9 @@ function drawIpInput() {
 		container: canvas
 	});
 	panel.background = 'black';
-	var btn = new Interface.Button({ 
+	var btn = new Interface.Button({
 		bounds:[.05,.05,.3,.9],  
-		label:'toggle'  
+		label:'toggle'
 	});
 	panel.add(btn);
 	var buttons = ['1','2','3','4','5','6','7','8','9','.','0','->'];
