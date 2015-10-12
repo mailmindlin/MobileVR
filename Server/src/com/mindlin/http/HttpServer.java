@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 
 import javax.net.ServerSocketFactory;
 
-public class HttpServer implements Runnable, Consumer<Socket> {
+public class HttpServer extends Server {
 	protected final int port;
 	protected AtomicInteger threadsRunning = new AtomicInteger(0);
 	protected ExecutorService executor;
