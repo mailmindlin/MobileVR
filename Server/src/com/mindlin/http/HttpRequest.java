@@ -4,6 +4,8 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
+import java.net.Socket;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,15 +16,20 @@ import java.util.regex.Pattern;
 public class HttpRequest {
 	public String method;
 	public final String path;
-	public final String httpv;
+	public final String protocol;
 	protected final HashMap<String, List<String>> headers;
 	protected final HashMap<String, String> getFields, postFields, cookies, multipartData;
+	protected final WeakReference<Socket> socket;
 	//because php compat
 	public final HashMap<String, String> $_GET, $_POST, $_COOKIE, $_FILE, $_REQUEST;
-	public HttpRequest(String method, String path, String httpv, HashMap<String, List<String>> headers, HashMap<String, String> getFields, HashMap<String, String> postFields, HashMap<String, String> cookies, HashMap<String, String> multipartData) {
+	public HttpRequest(String method, String path, String protocol, HashMap<String, List<String>> headers, HashMap<String, String> getFields, HashMap<String, String> postFields, HashMap<String, String> cookies, HashMap<String, String> multipartData, Socket socket) {
+		this(method, path, protocol, headers, getFields, postFields, cookies, multipartData, new WeakReference<>(socket));
+	}}
+	public HttpRequest(String method, String path, String protocol, HashMap<String, List<String>> headers, HashMap<String, String> getFields, HashMap<String, String> postFields, HashMap<String, String> cookies, HashMap<String, String> multipartData, WeakReference<Socket> socket) {
 		this.method = method;
 		this.path = path;
-		this.httpv = httpv;
+		this.protocol = protocol;
+		this.socket = socket;
 		//because final
 		this.headers = (headers == null || headers.isEmpty())?null:headers;
 		this.getFields = (getFields == null || getFields.isEmpty())?null:getFields;
@@ -46,6 +53,21 @@ public class HttpRequest {
 			return null;
 		return values.get(0);
 	}
+	public boolean hasHeader(String name) {
+		return this.headers.containsKey(name);
+	}
+	public String getProtocol() {
+		return this.protocol;
+	}
+	public String getPath() {
+		return this.path;
+	}
+	public String getMethod() {
+		return this.method;
+	}
+	public WeakReference<Socket> getSocket() {
+		return this.socket;
+	}
 	public static class HttpRequestBuilder {
 		public static final Pattern headerParser = Pattern.compile("(?<name>.*?): (?<value>.*?)");
 		public static HttpRequest fromStream(InputStream is) throws IOException {
@@ -61,6 +83,7 @@ public class HttpRequest {
 					baos.write(buffer, 0, len);
 			}
 			
+			//convert from byte array to string. This is kind of hard, because it might be using a different charset that is default.
 			System.out.println("Stringifying...");
 			List<String> lines;
 			{
@@ -91,17 +114,20 @@ public class HttpRequest {
 				lines = Arrays.asList(lineArr);
 				System.out.println(lines);
 			}
+			
+			//now, build the request
 			HttpRequestBuilder builder = new HttpRequestBuilder();
 			//TODO finish
 			//for (int i=1; i<)
 			return null;
 		}
-		protected String method, path, httpv;
+		protected String method, path, protocol;
 		protected HashMap<String, List<String>> headers = new HashMap<>();
 		protected final HashMap<String, String> getFields = new HashMap<>(),
 				postFields = new HashMap<>(),
 				cookies = new HashMap<>(),
 				multipartData = new HashMap<>();
+		protected WeakReference<Socket> socket;
 		public HttpRequestBuilder setMethod(String method) {
 			this.method = method;
 			return this;
@@ -139,8 +165,12 @@ public class HttpRequest {
 			multipartData.put(name, value);
 			return this;
 		}
+		public HttpRequestBuilder setSocket(Socket socket) {
+			this.socket = new WeakReference(socket);
+			return this;
+		}
 		public HttpRequest build() {
-			return new HttpRequest(method, path, httpv, headers, getFields, postFields, cookies, multipartData);
+			return new HttpRequest(method, path, protocol, headers, getFields, postFields, cookies, multipartData, socket);
 		}
 	}
 }

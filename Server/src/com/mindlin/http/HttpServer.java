@@ -11,20 +11,21 @@ import java.util.function.Consumer;
 
 import javax.net.ServerSocketFactory;
 
-public class HttpServer extends Server {
+public class HttpServer extends Server implements Consumer<Socket> {
 	protected final int port;
 	protected AtomicInteger threadsRunning = new AtomicInteger(0);
 	protected ExecutorService executor;
-	public HttpServer() {
+	public HttpServer() throws IOException {
 		this(1234, Executors.newCachedThreadPool());
 	}
-	public HttpServer(int port) {
+	public HttpServer(int port) throws IOException {
 		this(port, Executors.newCachedThreadPool());
 	}
-	public HttpServer(ExecutorService exec) {
+	public HttpServer(ExecutorService exec) throws IOException {
 		this(1234, exec);
 	}
-	public HttpServer(int port, ExecutorService exec) {
+	public HttpServer(int port, ExecutorService exec) throws IOException {
+		super(port);
 		this.executor = exec;
 		this.port = port;
 	}
