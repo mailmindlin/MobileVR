@@ -7,11 +7,14 @@ import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.net.Socket;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import com.mindlin.util.MultiValueHashMap;
 
 public class HttpRequest {
 	public String method;
@@ -24,8 +27,8 @@ public class HttpRequest {
 	public final HashMap<String, String> $_GET, $_POST, $_COOKIE, $_FILE, $_REQUEST;
 	public HttpRequest(String method, String path, String protocol, HashMap<String, List<String>> headers, HashMap<String, String> getFields, HashMap<String, String> postFields, HashMap<String, String> cookies, HashMap<String, String> multipartData, Socket socket) {
 		this(method, path, protocol, headers, getFields, postFields, cookies, multipartData, new WeakReference<>(socket));
-	}}
-	public HttpRequest(String method, String path, String protocol, HashMap<String, List<String>> headers, HashMap<String, String> getFields, HashMap<String, String> postFields, HashMap<String, String> cookies, HashMap<String, String> multipartData, WeakReference<Socket> socket) {
+	}
+	public HttpRequest(String method, String path, String protocol, Map<String, ? extends Collection<String>> headers, HashMap<String, String> getFields, HashMap<String, String> postFields, HashMap<String, String> cookies, HashMap<String, String> multipartData, WeakReference<Socket> socket) {
 		this.method = method;
 		this.path = path;
 		this.protocol = protocol;
@@ -36,6 +39,25 @@ public class HttpRequest {
 		this.postFields = (postFields == null || postFields.isEmpty())?null:postFields;
 		this.cookies = (cookies == null || cookies.isEmpty())?null:cookies;
 		this.multipartData = (multipartData == null || multipartData.isEmpty())?null:multipartData;
+		this.$_GET = this.getFields;
+		this.$_POST = this.postFields;
+		this.$_COOKIE = this.cookies;
+		this.$_FILE = this.multipartData;
+		this.$_REQUEST = new HashMap<>($_GET);
+		$_REQUEST.putAll($_COOKIE);
+		$_REQUEST.putAll($_POST);
+	}
+	public HttpRequest(String method, String path, String protocol, MultiValueHashMap<String, String> headers, Map<String, String> getFields, HashMap<String, String> postFields, HashMap<String, String> cookies, HashMap<String, String> multipartData, WeakReference<Socket> socket) {
+		this.method = method;
+		this.path = path;
+		this.protocol = protocol;
+		this.socket = socket;
+		//because final
+		this.headers = headers;
+		this.getFields = getFields;
+		this.postFields = postFields;
+		this.cookies = cookies;
+		this.multipartData = multipartData;
 		this.$_GET = this.getFields;
 		this.$_POST = this.postFields;
 		this.$_COOKIE = this.cookies;
@@ -102,9 +124,8 @@ public class HttpRequest {
 								System.out.println("Switching charsets from " + encoding + " to " + charset);
 								encoding = charset;
 								lineArr = new String(baos.toByteArray(), 0, baos.size(), encoding).split("\n");
-								for (int j=0;i<lineArr.length;i++) {
-									System.out.println("LX "+(lineArr[i] = lineArr[i].trim()));
-								}
+								for (int j=0;i<lineArr.length;j++)
+									System.out.println("LX "+(lineArr[j] = lineArr[j].trim()));
 							}
 						}
 						break;
@@ -122,31 +143,59 @@ public class HttpRequest {
 			return null;
 		}
 		protected String method, path, protocol;
-		protected HashMap<String, List<String>> headers = new HashMap<>();
+		protected MultiValueHashMap<String, String> headers = new MultiValueHashMap<>();
 		protected final HashMap<String, String> getFields = new HashMap<>(),
 				postFields = new HashMap<>(),
 				cookies = new HashMap<>(),
 				multipartData = new HashMap<>();
 		protected WeakReference<Socket> socket;
+		/**
+		 * Set method used
+		 * @param method HTTP method (e.g., {@code GET} or {@code DELETE}; case-insensitive)
+		 * @return self
+		 */
 		public HttpRequestBuilder setMethod(String method) {
-			this.method = method;
+			this.method = method.toUpperCase();
 			return this;
 		}
+		/**
+		 * Set requested path
+		 * @param path path
+		 * @return self
+		 */
 		public HttpRequestBuilder setPath(String path) {
 			this.path = path;
 			return this;
 		}
-		public HttpRequestBuilder setHttpv(String httpv) {
-			this.httpv = httpv;
+		
+		/**
+		 * Set protocol for request (e.g., {@code HTTP/1.1})
+		 * @param protocol new value
+		 * @return self
+		 */
+		public HttpRequestBuilder setProtocol(String protocol) {
+			this.protocol = protocol;
 			return this;
 		}
+		
+		/**
+		 * Add header to request (don't get of any others if they already are there)
+		 * @param name header name (case insensitive)
+		 * @param value header value
+		 * @return
+		 */
 		public HttpRequestBuilder addHeader(String name, String value) {
-			List<String> values = headers.computeIfAbsent(name, (a)->(new ArrayList<String>()));
-			values.add(value);
+			headers.add(name.toLowerCase(), value);
 			return this;
 		}
+		/**
+		 * Add multiple headers by the same name
+		 * @param name header name (case insensitive)
+		 * @param values all values for the header
+		 * @return self
+		 */
 		public HttpRequestBuilder addHeader(String name, String...values) {
-			headers.computeIfAbsent(name, (a)->(new ArrayList<String>())).addAll(Arrays.asList(values));
+			headers.addAll(name.toLowerCase(), Arrays.asList(values));
 			return this;
 		}
 		public HttpRequestBuilder setGetField(String key, String value) {
@@ -166,7 +215,7 @@ public class HttpRequest {
 			return this;
 		}
 		public HttpRequestBuilder setSocket(Socket socket) {
-			this.socket = new WeakReference(socket);
+			this.socket = new WeakReference<>(socket);
 			return this;
 		}
 		public HttpRequest build() {

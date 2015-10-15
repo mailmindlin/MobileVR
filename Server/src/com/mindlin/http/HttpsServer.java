@@ -26,7 +26,7 @@ public class HttpsServer extends HttpServer {
 		return new HttpsServer(port, ctx);
 	}
 	protected final SSLContext ctx;
-	public HttpsServer(int port, SSLContext ctx) {
+	public HttpsServer(int port, SSLContext ctx) throws IOException {
 		super(port);
 		this.ctx = ctx;
 	}
